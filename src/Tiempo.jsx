@@ -1,52 +1,72 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import './stilos/tiempo.css';
 import Chart from 'chart.js/auto';
 
 const WeatherForecast = () => {
-    // useEffect(() => {
-    //     const ctx = document.getElementById('weatherChart').getContext('2d');
+    const chartContainerRef = useRef(null);
+    const chartInstanceRef = useRef(null);
 
-    //     // Destruir el gráfico existente si ya existe
-    //     if (window.weatherChart) {
-    //         window.weatherChart.destroy();
-    //     }
+    useEffect(() => {
+        const ctx = chartContainerRef.current.getContext('2d');
 
-    //     // Crear un nuevo gráfico y guardar la referencia en window.weatherChart
-    //     window.weatherChart = new Chart(ctx, {
-    //         type: 'line',
-    //         data: {
-    //             labels: ['Ahora', '12 PM', '2 PM', '4 PM', '6 PM', '8 PM', '10 PM', '12 AM', '2 AM', '4 AM', '6 AM', '8 AM'],
-    //             datasets: [{
-    //                 label: 'Temperatura (°C)',
-    //                 data: [9, 11, 12, 13, 12, 10, 8, 7, 6, 5, 5, 4],
-    //                 borderColor: 'rgba(255, 255, 255, 0.8)',
-    //                 backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    //                 fill: true,
-    //                 tension: 0.4,
-    //             }]
-    //         },
-    //         options: {
-    //             scales: {
-    //                 x: {
-    //                     display: false
-    //                 },
-    //                 y: {
-    //                     display: false
-    //                 }
-    //             },
-    //             plugins: {
-    //                 legend: {
-    //                     display: false
-    //                 }
-    //             },
-    //             elements: {
-    //                 point: {
-    //                     radius: 0
-    //                 }
-    //             }
-    //         }
-    //     });
-    // }, []);
+        // Destruir el gráfico existente si ya existe
+        if (chartInstanceRef.current) {
+            chartInstanceRef.current.destroy();
+        }
+
+        // Crear un nuevo gráfico
+        const newChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Ahora', '12 PM', '2 PM', '4 PM', '6 PM', '8 PM', '10 PM', '12 AM', '2 AM', '4 AM', '6 AM', '8 AM'],
+                datasets: [{
+                    label: 'Temperatura (°C)',
+                    data: [10, 11, 12, 13, 12, 10, 8, 7, 6, 5, 5, 4],
+                    borderColor: 'rgba(255, 255, 255, 0.8)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 2, // Tamaño de los puntos
+                    pointBackgroundColor: 'rgba(255, 255, 255, 0.8)', // Color de fondo de los puntos
+                    pointBorderColor: 'rgba(255, 255, 255, 0.8)', // Color del borde de los puntos
+                    pointHoverRadius: 1, // Tamaño de los puntos al pasar el mouse
+                    pointHoverBackgroundColor: 'rgba(255, 255, 255, 1)', // Color de fondo de los puntos al pasar el mouse
+                    pointHoverBorderColor: 'rgba(255, 255, 255, 1)', // Color del borde de los puntos al pasar el mouse
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        display: false
+                    },
+                    y: {
+                        display: false
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                elements: {
+                    point: {
+                        radius: 0
+                    }
+                }
+            }
+        });
+
+        // Guardar la instancia del gráfico en useRef para futuras referencias
+        chartInstanceRef.current = newChartInstance;
+
+        // Limpiar el gráfico al desmontar el componente
+        return () => {
+            if (chartInstanceRef.current) {
+                chartInstanceRef.current.destroy();
+                chartInstanceRef.current = null;
+            }
+        };
+    }, []);
 
     return (
         <div className="App">
@@ -61,7 +81,7 @@ const WeatherForecast = () => {
                         <span>Ahora</span>
                     </div>
                     <div className="weather-forecast">
-                    <div className="weather-hour">
+                        <div className="weather-hour">
                             <span>10°</span>
                             <img src="../src/assets/estaciones_tiempo/clear.png" alt="cloudy"/>
                             <span className='lluvia'>3%</span>
@@ -135,7 +155,7 @@ const WeatherForecast = () => {
                         </div>
                     </div>
                     <div className="weather-graph">
-                        <canvas id="weatherChart"></canvas>
+                        <canvas ref={chartContainerRef}></canvas>
                     </div>
                 </div>
             </div>
