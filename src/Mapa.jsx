@@ -12007,7 +12007,8 @@ function MapWithCircles() {
               Noticias del tiempo
             </button>
             
-          <Link className="btn btn-primary m-2 w-75" to="/estadistica_tiempo_real">Generar estadistica</Link>
+          <Link className="btn btn-primary m-2 w-75" to="/estadistica_tiempo_real
+          ">Generar estadistica</Link>
             <button className="btn btn-success m-2 w-75" >
               Ver todas las estaciones
             </button>
